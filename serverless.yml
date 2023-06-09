@@ -1,0 +1,25 @@
+service: deployment-example-lambda-serverless-framework
+frameworkVersion: '3'
+plugins:
+  - serverless-dotenv-plugin
+  - serverless-plugin-typescript
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+
+functions:
+  api:
+    handler: handlers/posts.handler
+    events:
+      - http:
+          method: GET
+          path: /
+
+# only include the Prisma binary required on AWS Lambda while packaging
+package:
+  patterns:
+    - '!node_modules/.prisma/client/libquery_engine-*'
+    - 'node_modules/.prisma/client/libquery_engine-rhel-*'
+    - '!node_modules/prisma/libquery_engine-*'
+    - '!node_modules/@prisma/engines/**'
