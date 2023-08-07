@@ -8,3 +8,5 @@ jspm_packages
 
 # dotenv
 .env
+
+.DS_Store
