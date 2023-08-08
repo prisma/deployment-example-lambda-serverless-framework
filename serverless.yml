@@ -1,4 +1,4 @@
-service: deployment-example-lambda-serverless-framework
+service: deployment-example-sls
 frameworkVersion: '3'
 plugins:
   - serverless-dotenv-plugin
@@ -28,7 +28,12 @@ package:
 custom:
   webpack:
     webpackConfig: 'webpack.config.js'
-    packager: 'npm'
+    packager: npm
     includeModules:
       forceExclude:
         - aws-sdk
+      # forceInclude:
+        # - '.prisma'
+    packagerOptions:
+      scripts:
+        - npx prisma generate
