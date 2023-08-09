@@ -1,56 +1,38 @@
-const path = require('path');
-const slsw = require('serverless-webpack');
-const nodeExternals = require('webpack-node-externals');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-
-const isLocal = slsw.lib.webpack.isLocal;
+/* eslint-disable @typescript-eslint/no-var-requires */
+const path = require('path')
+const nodeExternals = require('webpack-node-externals')
+const slsw = require('serverless-webpack')
+const CopyPlugin = require('copy-webpack-plugin')
+const { isLocal } = slsw.lib.webpack
 
 module.exports = {
-  mode: isLocal ? 'development' : 'production',
+  target: 'node',
+  stats: 'normal',
   entry: slsw.lib.entries,
-  externals: [nodeExternals()],
-  devtool: 'inline-cheap-module-source-map',
+  // externals: [nodeExternals()],
+  plugins: [
+    new CopyPlugin({
+      patterns: [
+        { from: './node_modules/.prisma/client/schema.prisma', to: './handlers' },
+        { from: './node_modules/.prisma/client/libquery_engine-rhel-openssl-1.0.x.so.node', to: './handlers' },
+      ]
+    })
+  ],
+  mode: isLocal ? 'development' : 'production',
+  optimization: { concatenateModules: false },
+  resolve: { extensions: ['.js', '.ts'] },
   module: {
-    rules: [{
-        test: /\.ts$/,
-        exclude: /node_modules/,
+    rules: [
+      {
+        test: /\.tsx?$/,
         loader: 'ts-loader',
-        options: {
-          // disable type checker - we will use it in fork plugin
-          transpileOnly: true
-        }
-      }
+        exclude: /node_modules/,
+      },
     ],
   },
-//   node: false,
-  resolve: {
-    extensions: ['.js', '.jsx', '.json', '.ts', '.tsx']
+  output: {
+    libraryTarget: 'commonjs',
+    filename: '[name].js',
+    path: path.resolve(__dirname, '.webpack'),
   },
-  plugins: [
-    new ForkTsCheckerWebpackPlugin()
-  ],
-  target: 'node',
-};
-
-// module.exports = {
-//   output: {
-//     libraryTarget: 'commonjs2',
-//     path: path.join(__dirname, '.webpack'),
-//     filename: '[name].js'
-//   },
-//   cache: {
-//     type: 'filesystem',
-//     allowCollectingMemory: true,
-//     cacheDirectory: path.resolve('.webpackCache')
-//   },
-//   module: {
-//     rules: [
-//       {
-//         // Include ts, tsx, js, and jsx files.
-//         test: /\.(ts|js)x?$/,
-//         exclude: /node_modules/,
-//         use: ['babel-loader']
-//       }
-//     ]
-//   },
-// };
+}

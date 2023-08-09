@@ -16,24 +16,11 @@ functions:
           method: GET
           path: /
 
-# only include the Prisma binary required on AWS Lambda while packaging
 package:
   individually: true
-  patterns:
-    - '!node_modules/.prisma/client/libquery_engine-*'
-    - 'node_modules/.prisma/client/libquery_engine-rhel-*'
-    - '!node_modules/prisma/libquery_engine-*'
-    - '!node_modules/@prisma/engines/**'
   
 custom:
   webpack:
     webpackConfig: 'webpack.config.js'
     packager: npm
-    includeModules:
-      forceExclude:
-        - aws-sdk
-      # forceInclude:
-        # - '.prisma'
-    packagerOptions:
-      scripts:
-        - npx prisma generate
+    includeModules: true
