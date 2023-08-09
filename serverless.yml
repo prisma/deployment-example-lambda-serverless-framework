@@ -22,5 +22,9 @@ package:
 custom:
   webpack:
     webpackConfig: 'webpack.config.js'
-    packager: npm
     includeModules: true
+    packager: 'npm'
+    packagerOptions:
+      scripts:
+        - prisma generate 
+

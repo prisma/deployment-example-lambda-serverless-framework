@@ -9,12 +9,11 @@ module.exports = {
   target: 'node',
   stats: 'normal',
   entry: slsw.lib.entries,
-  // externals: [nodeExternals()],
+  externals: [nodeExternals()],
   plugins: [
     new CopyPlugin({
       patterns: [
-        { from: './node_modules/.prisma/client/schema.prisma', to: './handlers' },
-        { from: './node_modules/.prisma/client/libquery_engine-rhel-openssl-1.0.x.so.node', to: './handlers' },
+        { from: './node_modules/.prisma/client/schema.prisma', to: './' },
       ]
     })
   ],
